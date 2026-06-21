@@ -1,11 +1,11 @@
 const NOTION_API = 'https://api.notion.com/v1';
 
 const DB = {
-  expenses: '2d3f0671-bf64-80d7-8e95-000b6247247f',
-  income: '2d3f0671-bf64-8145-aaa3-000b88d9296f',
-  budgetCategories: '1d7f0671-bf64-8088-8b6a-000b857992d6',
-  debtAccounts: '2d3f0671-bf64-803a-8670-000bfc1fc037',
-  savingsAccounts: '2d3f0671-bf64-816d-a605-000b04f0cf6c',
+  expenses: '2d3f0671-bf64-80a9-af04-c2057b3565c3',
+  income: '2d3f0671-bf64-803b-adfd-fd86a90b46c7',
+  budgetCategories: '1d7f0671-bf64-80e0-84dc-e51a1c302271',
+  debtAccounts: '2d3f0671-bf64-802d-9d4f-c543e06669b7',
+  savingsAccounts: '2d3f0671-bf64-80d2-9511-c0ad075003d1',
 };
 
 async function notionFetch(endpoint, method = 'GET', body = null) {
