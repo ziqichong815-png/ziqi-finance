@@ -2,271 +2,80 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>财务报告 · ZIQI CHONG</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #111111; color: #F7F7F4; font-family: -apple-system, 'PingFang SC', sans-serif; min-height: 100vh; }
-  .header { padding: 24px 20px 16px; border-bottom: 1px solid #222; }
-  .header h1 { font-size: 13px; letter-spacing: 0.15em; color: #C5B08A; text-transform: uppercase; margin-bottom: 16px; }
-  .month-nav { display: flex; align-items: center; gap: 16px; }
-  .month-nav button { background: #1C1C1C; border: 1px solid #2A2A2A; color: #F7F7F4; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s; }
-  .month-nav button:hover { border-color: #C5B08A; }
-  .month-nav .current-month { font-size: 20px; font-weight: 600; flex: 1; }
-  .year-selector { display: flex; gap: 8px; margin-top: 12px; }
-  .year-btn { background: #1C1C1C; border: 1px solid #2A2A2A; color: #888; padding: 4px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
-  .year-btn.active { border-color: #C5B08A; color: #C5B08A; }
-  .section { padding: 20px; border-bottom: 1px solid #1A1A1A; }
-  .section-title { font-size: 11px; letter-spacing: 0.12em; color: #C5B08A; text-transform: uppercase; margin-bottom: 16px; }
-  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .kpi { background: #1A1A1A; border-radius: 12px; padding: 16px; }
-  .kpi.full { grid-column: 1 / -1; }
-  .kpi-label { font-size: 11px; color: #666; margin-bottom: 6px; }
-  .kpi-value { font-size: 22px; font-weight: 700; color: #F7F7F4; }
-  .kpi-value.gold { color: #C5B08A; }
-  .kpi-value.green { color: #4CAF50; }
-  .kpi-value.red { color: #E57373; }
-  .kpi-sub { font-size: 11px; color: #555; margin-top: 4px; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#EEEEE9;font-family:-apple-system,'PingFang SC',sans-serif;min-height:100vh}
 
-  /* Yearly chart */
-  .yearly-chart { margin-top: 4px; }
-  .chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 80px; }
-  .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
-  .chart-bar { width: 100%; border-radius: 4px 4px 0 0; background: #2A2A2A; transition: all 0.3s; cursor: pointer; min-height: 4px; }
-  .chart-bar.active { background: #C5B08A; }
-  .chart-bar:hover { opacity: 0.8; }
-  .chart-label { font-size: 9px; color: #555; text-align: center; }
-  .chart-label.active { color: #C5B08A; }
-
-  /* Budget bars */
-  .budget-item { margin-bottom: 14px; }
-  .budget-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
-  .budget-name { font-size: 13px; color: #CCC; }
-  .budget-amounts { font-size: 12px; color: #666; }
-  .budget-amounts span { color: #F7F7F4; }
-  .bar-track { height: 6px; background: #1E1E1E; border-radius: 3px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
-  .bar-fill.ok { background: #4CAF50; }
-  .bar-fill.warn { background: #FFC107; }
-  .bar-fill.over { background: #E57373; }
-
-  /* Debt & savings */
-  .card { background: #1A1A1A; border-radius: 12px; padding: 16px; margin-bottom: 10px; }
-  .card-name { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
-  .card-row { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 6px; }
-  .card-row span { color: #F7F7F4; }
-  .debt-bar { height: 4px; background: #2A2A2A; border-radius: 2px; margin-top: 10px; overflow: hidden; }
-  .debt-fill { height: 100%; border-radius: 2px; background: #C5B08A; }
-
-  /* Recent */
-  .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #1A1A1A; }
-  .tx-item:last-child { border-bottom: none; }
-  .tx-name { font-size: 14px; }
-  .tx-meta { font-size: 11px; color: #555; margin-top: 2px; }
-  .tx-amount { font-size: 15px; font-weight: 600; color: #E57373; }
-
-  .loading { color: #444; font-size: 13px; text-align: center; padding: 30px; }
-  .nav-bottom { display: flex; border-top: 1px solid #1A1A1A; }
-  .nav-bottom a { flex: 1; text-align: center; padding: 16px; font-size: 11px; letter-spacing: 0.1em; text-decoration: none; color: #555; text-transform: uppercase; }
-  .nav-bottom a.active { color: #C5B08A; }
-</style>
-</head>
-<body>
-
-<div class="header">
-  <h1>ZIQI CHONG · 财务报告</h1>
-  <div class="month-nav">
-    <button id="prevMonth">‹</button>
-    <div class="current-month" id="currentMonthLabel">加载中...</div>
-    <button id="nextMonth">›</button>
-  </div>
-  <div class="year-selector" id="yearSelector"></div>
-</div>
-
-<!-- 全年趋势 -->
-<div class="section">
-  <div class="section-title">全年支出趋势</div>
-  <div class="yearly-chart">
-    <div class="chart-bars" id="yearlyBars"><div class="loading">加载中...</div></div>
-  </div>
-</div>
-
-<!-- 本月概览 -->
-<div class="section">
-  <div class="section-title">本月财务表现</div>
-  <div class="kpi-grid" id="monthlyKpi"><div class="loading">加载中...</div></div>
-</div>
-
-<!-- 预算执行 -->
-<div class="section">
-  <div class="section-title">预算执行情况</div>
-  <div id="budgetList"><div class="loading">加载中...</div></div>
-</div>
-
-<!-- 债务 -->
-<div class="section">
-  <div class="section-title">债务进度</div>
-  <div id="debtList"><div class="loading">加载中...</div></div>
-</div>
-
-<!-- 储蓄 -->
-<div class="section">
-  <div class="section-title">储蓄目标</div>
-  <div id="savingsList"><div class="loading">加载中...</div></div>
-</div>
-
-<!-- 最近支出 -->
-<div class="section">
-  <div class="section-title">最近支出</div>
-  <div id="recentList"><div class="loading">加载中...</div></div>
-</div>
-
-<div class="nav-bottom">
-  <a href="/record.html">记录</a>
-  <a href="/dashboard.html" class="active">报告</a>
-</div>
-
-<script>
-const fmt = n => 'RM ' + (n || 0).toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-let currentYear = new Date().getFullYear();
-let currentMonth = new Date().getMonth() + 1;
-let yearlyData = null;
-
-function renderYearSelector() {
-  const years = [2025, 2026];
-  const el = document.getElementById('yearSelector');
-  el.innerHTML = years.map(y =>
-    `<button class="year-btn ${y === currentYear ? 'active' : ''}" onclick="changeYear(${y})">${y}</button>`
-  ).join('');
+.safe-wrap{
+  max-width:480px;
+  margin:0 auto;
+  min-height:100vh;
+  background:#F5F5F0;
+  position:relative;
+  padding-bottom:calc(80px + env(safe-area-inset-bottom));
 }
 
-async function changeYear(y) {
-  currentYear = y;
-  currentMonth = y === new Date().getFullYear() ? new Date().getMonth() + 1 : 12;
-  renderYearSelector();
-  yearlyData = null;
-  await loadYearly();
-  await loadDashboard();
+@media(min-width:520px){
+  body{display:flex;justify-content:center;align-items:flex-start;padding:24px 16px 24px}
+  .safe-wrap{border-radius:28px;min-height:auto;box-shadow:0 8px 40px rgba(0,0,0,0.10);overflow:hidden}
 }
 
-document.getElementById('prevMonth').onclick = () => {
-  currentMonth--;
-  if (currentMonth < 1) { currentMonth = 12; currentYear--; }
-  loadDashboard();
-};
-document.getElementById('nextMonth').onclick = () => {
-  const now = new Date();
-  if (currentYear === now.getFullYear() && currentMonth >= now.getMonth() + 1) return;
-  currentMonth++;
-  if (currentMonth > 12) { currentMonth = 1; currentYear++; }
-  loadDashboard();
-};
+.topbar{padding:calc(16px + env(safe-area-inset-top)) 20px 8px;display:flex;justify-content:space-between;align-items:center}
+.topbar-name{font-size:13px;font-weight:600;color:#111;letter-spacing:0.05em}
+.topbar-sub{font-size:11px;color:#999;margin-top:2px}
+.notif{width:34px;height:34px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid #E8E8E8;font-size:16px;cursor:pointer}
 
-async function loadYearly() {
-  const res = await fetch(`/api/notion?action=yearly&year=${currentYear}`);
-  yearlyData = await res.json();
-  renderYearlyChart();
-}
+.hero-card{margin:8px 20px 0;background:#111;border-radius:24px;padding:22px;color:#fff;position:relative;overflow:hidden}
+.hero-card::after{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:rgba(197,169,106,0.12);border-radius:50%}
+.hero-month-nav{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.mnav-btn{background:#1E1E1E;border:1px solid #2A2A2A;color:#666;width:28px;height:28px;border-radius:50%;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s}
+.mnav-btn:hover{border-color:#C5A96A;color:#C5A96A}
+.hero-month-label{font-size:15px;font-weight:600;color:#F0F0F0;flex:1}
+.hero-year-btns{display:flex;gap:6px}
+.yr-btn{background:#1E1E1E;border:1px solid #2A2A2A;color:#666;padding:3px 10px;border-radius:12px;font-size:11px;cursor:pointer}
+.yr-btn.active{border-color:#C5A96A;color:#C5A96A}
+.hero-label{font-size:11px;color:#666;margin-bottom:4px}
+.hero-balance{font-size:34px;font-weight:700;letter-spacing:-1px;color:#F0F0F0}
+.hero-balance span{font-size:18px;font-weight:400;color:#777;margin-right:3px}
+.hero-row{display:flex;gap:0;margin-top:16px;border-top:1px solid #1E1E1E;padding-top:14px}
+.hero-mini{flex:1;padding-right:12px}
+.hero-mini:not(:first-child){padding-left:12px;border-left:1px solid #1E1E1E}
+.hero-mini-label{font-size:10px;color:#666;margin-bottom:3px;letter-spacing:0.05em}
+.hero-mini-val{font-size:15px;font-weight:700}
+.hero-mini-val.gold{color:#C5A96A}
+.hero-mini-val.green{color:#52C17A}
 
-function renderYearlyChart() {
-  if (!yearlyData) return;
-  const months = yearlyData.months;
-  const maxExp = Math.max(...months.map(m => m.expenses), 1);
-  const el = document.getElementById('yearlyBars');
-  el.innerHTML = months.map((m, i) => {
-    const monthNum = i + 1;
-    const isActive = monthNum === currentMonth && currentYear === currentYear;
-    const h = Math.max(4, Math.round((m.expenses / maxExp) * 70));
-    return `
-      <div class="chart-bar-wrap" onclick="jumpToMonth(${monthNum})">
-        <div class="chart-bar ${monthNum === currentMonth ? 'active' : ''}" style="height:${h}px" title="${m.month}: ${fmt(m.expenses)}"></div>
-        <div class="chart-label ${monthNum === currentMonth ? 'active' : ''}">${m.month.replace('月','')}</div>
-      </div>`;
-  }).join('');
-}
+.section{padding:16px 20px 0}
+.sec-title{font-size:11px;font-weight:600;color:#AAA;letter-spacing:0.10em;text-transform:uppercase;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.sec-more{font-size:11px;color:#C5A96A;font-weight:500;letter-spacing:0;text-transform:none}
 
-function jumpToMonth(m) {
-  currentMonth = m;
-  renderYearlyChart();
-  loadDashboard();
-}
+.alert-card{background:#fff;border-radius:16px;padding:14px 16px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;border-left:3px solid #E05C5C}
+.alert-card.warn{border-left-color:#E0A550}
+.alert-card.tip{border-left-color:#52C17A}
+.alert-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.alert-icon.red{background:#FEEEEE}
+.alert-icon.warn{background:#FEF5E7}
+.alert-icon.green{background:#EEF9F2}
+.alert-title{font-size:13px;font-weight:600;color:#111;margin-bottom:3px}
+.alert-body{font-size:12px;color:#888;line-height:1.55}
 
-async function loadDashboard() {
-  const monthStr = `${currentYear}-${String(currentMonth).padStart(2,'0')}`;
-  document.getElementById('currentMonthLabel').textContent = `${currentYear}年${String(currentMonth).padStart(2,'0')}月`;
+.budget-card{background:#fff;border-radius:16px;padding:14px 16px;margin-bottom:8px}
+.budget-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.budget-name{font-size:13px;font-weight:600;color:#111}
+.badge{font-size:11px;padding:3px 9px;border-radius:10px;font-weight:500}
+.badge-ok{background:#EEF9F2;color:#2D9B5A}
+.badge-warn{background:#FEF5E7;color:#B8760A}
+.badge-over{background:#FEEEEE;color:#C0392B}
+.budget-amounts{font-size:12px;color:#AAA;margin-bottom:8px}
+.budget-amounts b{color:#111;font-size:14px}
+.btrack{height:6px;background:#F0F0EE;border-radius:3px;overflow:hidden;margin-bottom:6px}
+.bfill{height:100%;border-radius:3px}
+.bfill.ok{background:#52C17A}
+.bfill.warn{background:#E0A550}
+.bfill.over{background:#E05C5C}
+.budget-remain{font-size:11px;color:#BBB}
+.budget-remain b{color:#555}
 
-  const res = await fetch(`/api/notion?action=dashboard&month=${monthStr}`);
-  const data = await res.json();
-
-  // KPI
-  const s = data.monthly.savingsRate;
-  const rateColor = s >= 20 ? 'green' : s >= 0 ? 'gold' : 'red';
-  document.getElementById('monthlyKpi').innerHTML = `
-    <div class="kpi"><div class="kpi-label">本月收入</div><div class="kpi-value gold">${fmt(data.monthly.income)}</div></div>
-    <div class="kpi"><div class="kpi-label">本月支出</div><div class="kpi-value">${fmt(data.monthly.expenses)}</div></div>
-    <div class="kpi"><div class="kpi-label">储蓄率</div><div class="kpi-value ${rateColor}">${s}%</div></div>
-    <div class="kpi"><div class="kpi-label">预算使用</div><div class="kpi-value ${data.monthly.budgetAdherence > 100 ? 'red' : 'gold'}">${data.monthly.budgetAdherence}%</div></div>
-    <div class="kpi full"><div class="kpi-label">净资产</div><div class="kpi-value gold">${fmt(data.overview.netWorth)}</div><div class="kpi-sub">储蓄 ${fmt(data.overview.totalSavings)} · 债务 ${fmt(data.overview.totalDebt)}</div></div>
-  `;
-
-  // Budget
-  document.getElementById('budgetList').innerHTML = data.budget.length
-    ? data.budget.map(b => {
-        const pct = Math.min(b.usage, 100);
-        const cls = b.usage > 100 ? 'over' : b.usage > 80 ? 'warn' : 'ok';
-        return `<div class="budget-item">
-          <div class="budget-row"><span class="budget-name">${b.name}</span><span class="budget-amounts"><span>${fmt(b.actual)}</span> / ${fmt(b.budget)}</span></div>
-          <div class="bar-track"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div>
-        </div>`;
-      }).join('')
-    : '<div class="loading">本月无预算数据</div>';
-
-  // Debt
-  document.getElementById('debtList').innerHTML = data.debt.length
-    ? data.debt.map(d => {
-        const total = d.remaining + d.totalPaid;
-        const paidPct = total > 0 ? Math.round((d.totalPaid / total) * 100) : 0;
-        return `<div class="card">
-          <div class="card-name">${d.name}</div>
-          <div class="card-row">剩余债务 <span class="red">${fmt(d.remaining)}</span></div>
-          <div class="card-row">每月还款 <span>${fmt(d.monthlyPayment)}</span></div>
-          <div class="card-row">已还 <span>${fmt(d.totalPaid)}</span></div>
-          <div class="debt-bar"><div class="debt-fill" style="width:${paidPct}%"></div></div>
-        </div>`;
-      }).join('')
-    : '<div class="loading">无债务记录</div>';
-
-  // Savings
-  document.getElementById('savingsList').innerHTML = data.savings.length
-    ? data.savings.map(s => {
-        const pct = s.monthlyTarget > 0 ? Math.min(Math.round((s.accumulated / s.monthlyTarget) * 100), 100) : 0;
-        return `<div class="card">
-          <div class="card-name">${s.name}</div>
-          ${s.purpose ? `<div class="card-row">用途 <span>${s.purpose}</span></div>` : ''}
-          <div class="card-row">累积储蓄 <span class="green">${fmt(s.accumulated)}</span></div>
-          <div class="card-row">每月目标 <span>${fmt(s.monthlyTarget)}</span></div>
-          <div class="debt-bar"><div class="debt-fill" style="width:${pct}%; background:#4CAF50"></div></div>
-        </div>`;
-      }).join('')
-    : '<div class="loading">无储蓄记录</div>';
-
-  // Recent
-  document.getElementById('recentList').innerHTML = data.recentExpenses.length
-    ? data.recentExpenses.map(t => `
-        <div class="tx-item">
-          <div><div class="tx-name">${t.name}</div><div class="tx-meta">${t.date} · ${t.category || '—'}</div></div>
-          <div class="tx-amount">-${fmt(t.amount)}</div>
-        </div>`).join('')
-    : '<div class="loading">本月无支出记录</div>';
-
-  // Update yearly chart active bar
-  if (yearlyData) renderYearlyChart();
-}
-
-renderYearSelector();
-loadYearly();
-loadDashboard();
-</script>
-</body>
-</html>
+.debt-card{background:#fff;border-radius:16px;padding:14px
