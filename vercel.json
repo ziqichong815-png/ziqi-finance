@@ -1,8 +1,4 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/", "destination": "/public/record.html" },
-    { "source": "/record", "destination": "/public/record.html" },
-    { "source": "/dashboard", "destination": "/public/dashboard.html" }
-  ]
+  "outputDirectory": "public"
 }
