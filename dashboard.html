@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>财富报告 — ZIQI CHONG</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Helvetica Neue',sans-serif;background:#F7F7F4;color:#111;padding:0 0 60px}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px}
+.header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:36px;padding-bottom:20px;border-bottom:0.5px solid #ddd}
+.brand{font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#999;margin-bottom:8px}
+.title{font-size:26px;font-weight:500;color:#111;line-height:1.2}
+.sub{font-size:13px;color:#888;margin-top:4px}
+.month-label{font-size:12px;color:#999;letter-spacing:0.05em}
+.accent-line{width:28px;height:1.5px;background:#C5B08A;margin-top:8px;margin-left:auto}
+.nav-link{display:inline-block;font-size:12px;color:#888;text-decoration:none;border-bottom:0.5px solid #ccc;padding-bottom:1px;margin-top:8px}
+.section{margin-bottom:40px}
+.sec-num{font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#aaa;margin-bottom:6px}
+.sec-title{font-size:15px;font-weight:500;color:#111;padding-bottom:12px;border-bottom:0.5px solid #ddd;margin-bottom:20px}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:#ddd;border:0.5px solid #ddd;border-radius:12px;overflow:hidden}
+@media(min-width:500px){.metric-grid{grid-template-columns:repeat(4,1fr)}}
+.metric-cell{background:#fff;padding:16px 14px}
+.m-label{font-size:11px;color:#999;letter-spacing:0.04em;margin-bottom:8px}
+.m-value{font-size:19px;font-weight:500;color:#111;line-height:1}
+.m-sub{font-size:11px;color:#999;margin-top:5px}
+.m-pos{color:#2D6A4F}
+.m-neg{color:#B22222}
+.budget-wrap{border:0.5px solid #ddd;border-radius:12px;overflow:hidden}
+.bt-head{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:8px 12px;background:#f0f0ec}
+.bt-col{font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#aaa}
+.bt-col:not(:first-child){text-align:right}
+.bt-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:12px;border-top:0.5px solid #eee;align-items:center}
+.bt-row:last-child{font-weight:500;background:#fafaf8}
+.bt-cell{font-size:13px;color:#111}
+.bt-cell:not(:first-child){text-align:right}
+.bt-over{color:#B22222}
+.bt-ok{color:#2D6A4F}
+.bar-wrap{display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.bar-track{width:40px;height:2px;background:#e8e8e5;border-radius:1px;flex-shrink:0}
+.bar-fill{height:100%;border-radius:1px}
+.bar-ok{background:#2D6A4F}
+.bar-over{background:#B22222}
+.bar-warn{background:#C5B08A}
+.bar-pct{font-size:11px;color:#aaa;min-width:28px;text-align:right}
+.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dot-ok{background:#2D6A4F}
+.dot-over{background:#B22222}
+.dot-warn{background:#C5B08A}
+.two-col{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:500px){.two-col{grid-template-columns:1fr 1fr}}
+.card{background:#fff;border:0.5px solid #ddd;border-radius:12px;padding:16px 18px}
+.card-title{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;margin-bottom:16px}
+.debt-item{padding:12px 0;border-bottom:0.5px solid #eee}
+.debt-item:last-child{border-bottom:none}
+.debt-top{display:flex;justify-content:space-between;align-items:flex-start}
+.debt-name{font-size:13px;font-weight:500;color:#111}
+.debt-meta{font-size:11px;color:#999;margin-top:3px}
+.debt-amount{font-size:15px;font-weight:500;color:#111;text-align:right}
+.debt-paid{font-size:11px;color:#2D6A4F;text-align:right;margin-top:2px}
+.debt-bar{height:2px;background:#eee;border-radius:1px;margin-top:10px}
+.debt-bar-fill{height:100%;border-radius:1px;background:#111}
+.debt-pct{font-size:10px;color:#aaa;margin-top:4px}
+.savings-item{padding:12px 0;border-bottom:0.5px solid #eee}
+.savings-item:last-child{border-bottom:none}
+.sav-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.sav-name{font-size:13px;font-weight:500;color:#111}
+.sav-purpose{font-size:11px;color:#999;margin-top:3px}
+.sav-amount{font-size:15px;font-weight:500;color:#111;text-align:right}
+.sav-target{font-size:11px;color:#999;text-align:right;margin-top:2px}
+.sav-bar{height:2px;background:#eee;border-radius:1px}
+.sav-bar-fill{height:100%;border-radius:1px;background:#111}
+.sav-pct{font-size:10px;color:#aaa;margin-top:4px}
+.review-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:16px}
+@media(min-width:500px){.review-grid{grid-template-columns:1fr 1fr}}
+.score-block{display:flex;align-items:center;gap:20px}
+.score-num{font-size:52px;font-weight:500;color:#111;line-height:1}
+.score-grade{font-size:13px;font-weight:500;color:#C5B08A}
+.score-note{font-size:12px;color:#888;margin-top:6px;line-height:1.6}
+.review-sub{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;margin-bottom:10px}
+.review-item{font-size:13px;color:#111;padding:7px 0;border-bottom:0.5px solid #eee;display:flex;gap:8px;line-height:1.5}
+.review-item:last-child{border-bottom:none}
+.ri-dot{width:4px;height:4px;border-radius:50%;background:#aaa;flex-shrink:0;margin-top:6px}
+.ri-dot-red{background:#B22222}
+.action-wrap{border:0.5px solid #ddd;border-radius:12px;overflow:hidden}
+.action-item{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:14px 16px;border-bottom:0.5px solid #eee;align-items:start}
+.action-item:last-child{border-bottom:none}
+.action-n{font-size:11px;font-weight:500;color:#aaa;padding-top:1px}
+.action-text{font-size:13px;color:#111;line-height:1.6}
+.action-note{font-size:12px;color:#999;margin-top:3px}
+.footer{margin-top:40px;padding-top:20px;border-top:0.5px solid #ddd;display:flex;justify-content:space-between}
+.footer-l{font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#aaa}
+.footer-r{font-size:10px;color:#aaa}
+.loading-screen{display:flex;align-items:center;justify-content:center;min-height:60vh;font-size:13px;color:#aaa}
+.error-screen{display:flex;align-items:center;justify-content:center;min-height:60vh;font-size:13px;color:#B22222}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="app"><div class="loading-screen">载入财务数据中...</div></div>
+</div>
+<script>
+function fmt(n){return'RM '+(n||0).toLocaleString('en-MY',{minimumFractionDigits:0,maximumFractionDigits:0})}
+function calcScore(data){let s=50;const sr=data.monthly.savingsRate;if(sr>=30)s+=20;else if(sr>=15)s+=10;else if(sr<0)s-=20;const ba=data.monthly.budgetAdherence;if(ba<=90)s+=15;else if(ba<=100)s+=8;else if(ba>120)s-=10;const over=data.budget.filter(b=>b.usage>100).length;s-=over*5;if(data.overview.netWorth>0)s+=10;return Math.max(0,Math.min(100,s))}
+function render(data){
+const score=calcScore(data);
+const grade=score>=80?'优秀':score>=65?'良好':score>=50?'尚可':'需改善';
+const totalBudget=data.budget.reduce((s,b)=>s+b.budget,0);
+const totalActual=data.budget.reduce((s,b)=>s+b.actual,0);
+const totalDebt=data.debt.reduce((s,d)=>s+d.remaining,0);
+const totalPaid=data.debt.reduce((s,d)=>s+d.totalPaid,0);
+const overItems=data.budget.filter(b=>b.usage>100);
+const goodItems=data.budget.filter(b=>b.usage<=80&&b.budget>0);
+const actions=[];
+if(overItems.length)actions.push({n:'01',text:`控制 ${overItems.map(b=>b.name).join('、')} 的支出`,note:'本月超出预算，下月须重点关注'});
+actions.push({n:String(actions.length+1).padStart(2,'0'),text:'检查订阅清单，确认每项是否仍在使用',note:'避免为不再使用的服务持续付费'});
+if(data.monthly.savingsRate<30)actions.push({n:String(actions.length+1).padStart(2,'0'),text:`储蓄率目前 ${data.monthly.savingsRate}%，目标提升至 30%`,note:'优先从减少弹性支出入手'});
+else actions.push({n:String(actions.length+1).padStart(2,'0'),text:'储蓄率健康，考虑增加投资比例',note:'紧急备用金充足后，可开始定期投入指数基金'});
+document.getElementById('app').innerHTML=`
+<div class="header">
+  <div><div class="brand">ZIQI CHONG UNIVERSE</div><div class="title">财富经营系统</div><div class="sub">Wealth as a resource for a meaningful life.</div></div>
+  <div style="text-align:right"><div class="month-label">${data.monthly.month}</div><div class="accent-line"></div><a href="/record.html" class="nav-link">快速记录 →</a></div>
+</div>
+<div class="section">
+  <div class="sec-num">01 — 人生财富总览</div>
+  <div class="sec-title">当前财务状态</div>
+  <div class="metric-grid">
+    <div class="metric-cell"><div class="m-label">总储蓄</div><div class="m-value">${fmt(data.overview.totalSavings)}</div></div>
+    <div class="metric-cell"><div class="m-label">债务余额</div><div class="m-value">${fmt(data.overview.totalDebt)}</div></div>
+    <div class="metric-cell"><div class="m-label">净资产</div><div class="m-value ${data.overview.netWorth>=0?'m-pos':'m-neg'}">${fmt(data.overview.netWorth)}</div></div>
+    <div class="metric-cell"><div class="m-label">财务健康分</div><div class="m-value">${score}<span style="font-size:14px;color:#aaa">/100</span></div></div>
+  </div>
+</div>
+<div class="section">
+  <div class="sec-num">02 — 本月财务表现</div>
+  <div class="sec-title">${data.monthly.month}</div>
+  <div class="metric-grid">
+    <div class="metric-cell"><div class="m-label">本月收入</div><div class="m-value">${fmt(data.monthly.income)}</div></div>
+    <div class="metric-cell"><div class="m-label">本月支出</div><div class="m-value">${fmt(data.monthly.expenses)}</div></div>
+    <div class="metric-cell"><div class="m-label">储蓄率</div><div class="m-value ${data.monthly.savingsRate>=20?'m-pos':'m-neg'}">${data.monthly.savingsRate}%</div><div class="m-sub">目标 30%</div></div>
+    <div class="metric-cell"><div class="m-label">预算执行</div><div class="m-value ${data.monthly.budgetAdherence<=100?'m-pos':'m-neg'}">${data.monthly.budgetAdherence}%</div></div>
+  </div>
+</div>
+<div class="section">
+  <div class="sec-num">03 — 预算执行情况</div>
+  <div class="sec-title">各项目本月对比</div>
+  <div class="budget-wrap">
+    <div class="bt-head">
+      <div class="bt-col">项目</div>
+      <div class="bt-col" style="text-align:right">预算</div>
+      <div class="bt-col" style="text-align:right">实际</div>
+      <div class="bt-col" style="text-align:right">执行</div>
+    </div>
+    ${data.budget.map(b=>`<div class="bt-row">
+      <div style="display:flex;align-items:center;gap:8px"><div class="dot ${b.usage>100?'dot-over':b.usage>90?'dot-warn':'dot-ok'}"></div><div class="bt-cell">${b.name}</div></div>
+      <div class="bt-cell" style="text-align:right">${fmt(b.budget)}</div>
+      <div class="bt-cell ${b.usage>100?'bt-over':''}" style="text-align:right">${fmt(b.actual)}</div>
+      <div class="bar-wrap"><div class="bar-track"><div class="bar-fill ${b.usage>100?'bar-over':b.usage>90?'bar-warn':'bar-ok'}" style="width:${Math.min(b.usage,100)}%"></div></div><span class="bar-pct ${b.usage>100?'bt-over':''}">${b.usage}%</span></div>
+    </div>`).join('')}
+    <div class="bt-row">
+      <div style="display:flex;align-items:center;gap:8px"><div class="dot" style="background:#ddd"></div><div class="bt-cell">合计</div></div>
+      <div class="bt-cell" style="text-align:right">${fmt(totalBudget)}</div>
+      <div class="bt-cell" style="text-align:right">${fmt(totalActual)}</div>
+      <div class="bar-wrap"><div class="bar-track"><div class="bar-fill ${totalActual>totalBudget?'bar-over':'bar-ok'}" style="width:${Math.min(totalBudget>0?Math.round(totalActual/totalBudget*100):0,100)}%"></div></div><span class="bar-pct">${totalBudget>0?Math.round(totalActual/totalBudget*100):0}%</span></div>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <div class="sec-num">04 — 债务进度</div>
+  <div class="sec-title">走向财务自由的路径</div>
+  <div class="card">
+    ${data.debt.map(d=>{const pct=(d.totalPaid+d.remaining)>0?Math.round(d.totalPaid/(d.totalPaid+d.remaining)*100):0;return`<div class="debt-item"><div class="debt-top"><div><div class="debt-name">${d.name}</div><div class="debt-meta">每月还款 ${fmt(d.monthlyPayment)}</div></div><div><div class="debt-amount">${fmt(d.remaining)}</div><div class="debt-paid">已还 ${fmt(d.totalPaid)}</div></div></div><div class="debt-bar"><div class="debt-bar-fill" style="width:${pct}%"></div></div><div class="debt-pct">已还清 ${pct}%</div></div>`}).join('')}
+  </div>
+</div>
+<div class="section">
+  <div class="sec-num">05 — 储蓄目标</div>
+  <div class="sec-title">为人生选择积蓄力量</div>
+  <div class="card">
+    ${data.savings.map(s=>{const pct=s.monthlyTarget>0?Math.min(Math.round(s.accumulated/s.monthlyTarget*100),100):0;return`<div class="savings-item"><div class="sav-top"><div><div class="sav-name">${s.name}</div><div class="sav-purpose">${s.purpose||''}</div></div><div><div class="sav-amount">${fmt(s.accumulated)}</div><div class="sav-target">目标 ${fmt(s.monthlyTarget)}</div></div></div><div class="sav-bar"><div class="sav-bar-fill" style="width:${pct}%"></div></div><div class="sav-pct">${pct}%</div></div>`}).join('')}
+  </div>
+</div>
+<div class="section">
+  <div class="sec-num">06 — 本月复盘</div>
+  <div class="sec-title">财务健康评估</div>
+  <div class="review-grid">
+    <div class="card">
+      <div style="width:24px;height:1.5px;background:#C5B08A;margin-bottom:12px"></div>
+      <div class="score-block"><div class="score-num">${score}</div><div><div class="score-grade">${grade}</div><div class="score-note">储蓄率 ${data.monthly.savingsRate}%<br>预算执行 ${data.monthly.budgetAdherence}%<br>${overItems.length?`${overItems.length} 项超支`:'全部项目受控'}</div></div></div>
+    </div>
+    <div class="card">
+      <div class="review-sub">本月亮点</div>
+      ${goodItems.slice(0,2).map(b=>`<div class="review-item"><div class="ri-dot"></div>${b.name} 控制在预算 ${b.usage}%</div>`).join('')}
+      ${data.monthly.savingsRate>=20?`<div class="review-item"><div class="ri-dot"></div>储蓄率达 ${data.monthly.savingsRate}%</div>`:''}
+      ${overItems.length?`<div class="review-sub" style="margin-top:14px">风险提醒</div>${overItems.map(b=>`<div class="review-item"><div class="ri-dot ri-dot-red"></div>${b.name} 超出预算 ${b.usage-100}%</div>`).join('')}`:''}
+    </div>
+  </div>
+  <div class="action-wrap">
+    ${actions.map(a=>`<div class="action-item"><div class="action-n">${a.n}</div><div><div class="action-text">${a.text}</div><div class="action-note">${a.note}</div></div></div>`).join('')}
+  </div>
+</div>
+<div class="footer"><div class="footer-l">ZIQI CHONG UNIVERSE</div><div class="footer-r">Designing a meaningful life.</div></div>`}
+fetch('/api/notion?action=dashboard').then(r=>r.json()).then(data=>render(data)).catch(()=>{document.getElementById('app').innerHTML='<div class="error-screen">载入失败，请检查设置后重试</div>'});
+</script>
+</body>
+</html>
