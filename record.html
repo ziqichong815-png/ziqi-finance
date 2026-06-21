@@ -2,150 +2,372 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>记录 — ZIQI CHONG</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>记录 · ZIQI CHONG</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Helvetica Neue',sans-serif;background:#F7F7F4;color:#111;min-height:100vh;padding-bottom:40px}
-.header{display:flex;justify-content:space-between;align-items:center;padding:20px 20px 0}
-.brand{font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#888}
-.nav-link{font-size:12px;color:#888;text-decoration:none;border-bottom:0.5px solid #ccc;padding-bottom:1px}
-.type-toggle{display:grid;grid-template-columns:repeat(3,1fr);margin:20px 16px 0;border:0.5px solid #ddd;border-radius:12px;overflow:hidden;background:#fff}
-.type-btn{padding:12px 0;font-size:13px;font-weight:500;text-align:center;border:none;background:transparent;color:#888;cursor:pointer}
-.type-btn.active{background:#111;color:#fff}
-.type-btn.active-inc{background:#2D6A4F;color:#fff}
-.type-btn.active-debt{background:#8B1A1A;color:#fff}
-.amount-section{text-align:center;padding:28px 20px 16px}
-.amount-label{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#999;margin-bottom:12px}
-.amount-display{font-size:56px;font-weight:500;color:#111;letter-spacing:-2px;line-height:1}
-.amount-currency{font-size:22px;color:#999;vertical-align:top;margin-top:12px;display:inline-block;margin-right:2px}
-.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#e8e8e5;margin:0 16px;border-radius:12px;overflow:hidden}
-.key{padding:18px 0;font-size:22px;font-weight:400;text-align:center;background:#fff;border:none;cursor:pointer;color:#111}
-.key:active{background:#f0f0ed}
-.key-muted{font-size:16px;color:#999}
-.section{margin:20px 16px 0}
-.field-label{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#999;margin-bottom:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#F5F5F0;font-family:-apple-system,'PingFang SC',sans-serif;min-height:100vh}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top)) 20px 12px;background:#F5F5F0}
+.topbar-name{font-size:13px;font-weight:600;color:#111;letter-spacing:0.05em}
+.topbar-link{font-size:12px;color:#AAA;text-decoration:none}
+.topbar-link:hover{color:#111}
+
+.tab-bar{display:flex;margin:0 20px 0;background:#EBEBEB;border-radius:14px;padding:4px;gap:4px}
+.tab{flex:1;text-align:center;padding:10px 0;border-radius:10px;font-size:14px;font-weight:500;color:#999;cursor:pointer;transition:all .2s;border:none;background:transparent}
+.tab.active{background:#fff;color:#111;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.tab.active.expense{background:#111;color:#fff}
+.tab.active.income{background:#1B5E3B;color:#fff}
+.tab.active.debt{background:#7B2D2D;color:#fff}
+
+.amount-section{text-align:center;padding:24px 20px 16px}
+.amount-label{font-size:11px;color:#AAA;letter-spacing:0.08em;margin-bottom:8px}
+.amount-display{display:flex;align-items:baseline;justify-content:center;gap:8px}
+.amount-currency{font-size:20px;color:#CCC;font-weight:400}
+.amount-value{font-size:52px;font-weight:700;color:#111;letter-spacing:-2px;min-width:60px}
+
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #EBEBEB;border-left:1px solid #EBEBEB}
+.key{border-right:1px solid #EBEBEB;border-bottom:1px solid #EBEBEB;padding:18px 0;text-align:center;font-size:22px;font-weight:400;color:#111;cursor:pointer;background:#fff;transition:background .1s;user-select:none}
+.key:active{background:#F0F0EE}
+.key.del{font-size:18px;color:#888}
+
+.form-area{padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+
+.field-label{font-size:11px;color:#AAA;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px}
+
 .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.cat-btn{padding:10px 4px;font-size:11px;text-align:center;border:0.5px solid #ddd;border-radius:10px;background:#fff;color:#555;cursor:pointer;line-height:1.4}
-.cat-btn .icon{font-size:18px;display:block;margin-bottom:3px}
-.cat-btn.selected{background:#111;color:#fff;border-color:#111}
-.date-row{display:flex;gap:8px}
-.date-chip{padding:9px 18px;font-size:13px;border:0.5px solid #ddd;border-radius:20px;background:#fff;color:#555;cursor:pointer}
-.date-chip.selected{background:#111;color:#fff;border-color:#111}
-.date-input{padding:9px 14px;font-size:13px;border:0.5px solid #ddd;border-radius:20px;background:#fff;color:#555;outline:none;font-family:inherit}
-.note-input{width:100%;padding:12px 14px;font-size:14px;font-family:inherit;border:0.5px solid #ddd;border-radius:12px;background:#fff;color:#111;outline:none;resize:none}
-.note-input::placeholder{color:#bbb}
-.income-cats{display:flex;flex-direction:column;gap:8px}
-.income-cat-btn{padding:12px 16px;font-size:13px;border:0.5px solid #ddd;border-radius:10px;background:#fff;color:#555;cursor:pointer;text-align:left}
-.income-cat-btn.selected{background:#2D6A4F;color:#fff;border-color:#2D6A4F}
-.debt-accounts{display:flex;flex-direction:column;gap:8px}
-.debt-btn{padding:12px 16px;border:0.5px solid #ddd;border-radius:10px;background:#fff;cursor:pointer;text-align:left}
-.debt-btn.selected{background:#8B1A1A;color:#fff;border-color:#8B1A1A}
-.debt-name{font-size:13px;font-weight:500}
-.debt-remaining{font-size:11px;color:#999;margin-top:2px}
-.debt-btn.selected .debt-remaining{color:rgba(255,255,255,0.7)}
-.submit-btn{width:calc(100% - 32px);margin:20px 16px 0;padding:16px;font-size:15px;font-weight:500;background:#111;color:#fff;border:none;border-radius:14px;cursor:pointer}
-.submit-btn.inc-btn{background:#2D6A4F}
-.submit-btn.debt-btn-submit{background:#8B1A1A}
-.divider{margin:28px 16px 0;border:none;border-top:0.5px solid #e0e0dc}
-.recent-label{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#999;margin:20px 16px 12px}
-.recent-list{margin:0 16px}
-.recent-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:0.5px solid #e8e8e5}
-.recent-item:last-child{border-bottom:none}
-.ri-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:2px}
-.ri-exp{background:#111}
-.ri-inc{background:#2D6A4F}
-.ri-left{display:flex;align-items:flex-start;gap:10px}
-.ri-name{font-size:13px;color:#111}
-.ri-cat{font-size:11px;color:#999;margin-top:2px}
-.ri-amount{font-size:13px;font-weight:500;color:#111}
-.ri-date{font-size:11px;color:#999;margin-top:2px;text-align:right}
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:12px 24px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:99;white-space:nowrap}
-.toast.show{opacity:1}
-.loading{color:#999;font-size:13px;text-align:center;padding:16px}
+.cat-card{background:#fff;border:1.5px solid #EBEBEB;border-radius:14px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all .15s}
+.cat-card:active{transform:scale(0.97)}
+.cat-card.selected{border-color:#111;background:#111}
+.cat-card.selected .cat-icon{filter:none}
+.cat-card.selected .cat-name{color:#fff}
+.cat-card.selected-income{border-color:#1B5E3B;background:#1B5E3B}
+.cat-card.selected-income .cat-name{color:#fff}
+.cat-card.selected-debt{border-color:#7B2D2D;background:#7B2D2D}
+.cat-card.selected-debt .cat-name{color:#fff}
+.cat-icon{font-size:22px;line-height:1}
+.cat-name{font-size:10px;color:#666;text-align:center;line-height:1.3;font-weight:500}
+.cat-sub{font-size:9px;color:#AAA;text-align:center;margin-top:1px}
+
+.date-chips{display:flex;gap:8px}
+.date-chip{background:#fff;border:1.5px solid #EBEBEB;border-radius:20px;padding:8px 14px;font-size:13px;color:#888;cursor:pointer;white-space:nowrap;transition:all .15s}
+.date-chip.selected{border-color:#111;color:#111;font-weight:500}
+.date-custom{flex:1;min-width:0}
+.date-custom input{width:100%;border:1.5px solid #EBEBEB;border-radius:20px;padding:8px 14px;font-size:13px;color:#111;background:#fff;outline:none}
+.date-custom input:focus{border-color:#111}
+
+.desc-input{width:100%;border:1.5px solid #EBEBEB;border-radius:14px;padding:12px 16px;font-size:14px;color:#111;background:#fff;outline:none;font-family:inherit}
+.desc-input:focus{border-color:#111}
+.desc-input::placeholder{color:#CCC}
+
+.submit-btn{width:100%;padding:16px;border-radius:16px;border:none;font-size:16px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:0.02em}
+.submit-btn:active{transform:scale(0.98)}
+.submit-expense{background:#111;color:#fff}
+.submit-income{background:#1B5E3B;color:#fff}
+.submit-debt{background:#7B2D2D;color:#fff}
+.submit-btn:disabled{opacity:0.4;cursor:default}
+
+.toast{position:fixed;top:env(safe-area-inset-top,20px);left:50%;transform:translateX(-50%) translateY(-80px);background:#111;color:#fff;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:500;transition:transform .3s;z-index:999;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(20px)}
+
+.bottomnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #EBEBEB;display:flex;padding:10px 0;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:#CCC;text-decoration:none}
+.nav-item.active{color:#111}
+.nav-icon{font-size:20px}
+
+.content{padding-bottom:calc(80px + env(safe-area-inset-bottom))}
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="brand">ZIQI CHONG</div>
-  <a href="/dashboard.html" class="nav-link">查看报告 →</a>
+
+<div class="topbar">
+  <div class="topbar-name">ZIQI CHONG</div>
+  <a href="/dashboard.html" class="topbar-link">查看报告 →</a>
 </div>
-<div class="type-toggle">
-  <button class="type-btn active" onclick="setType('expense')">支出</button>
-  <button class="type-btn" onclick="setType('income')">收入</button>
-  <button class="type-btn" onclick="setType('debt')">还债</button>
+
+<div class="tab-bar">
+  <button class="tab active expense" onclick="switchTab('expense')">支出</button>
+  <button class="tab income" onclick="switchTab('income')">收入</button>
+  <button class="tab debt" onclick="switchTab('debt')">还债</button>
 </div>
-<div class="amount-section">
-  <div class="amount-label">金额</div>
-  <div class="amount-display"><span class="amount-currency">RM</span><span id="amount-display">0</span></div>
-</div>
-<div class="keypad">
-  <button class="key" onclick="keyPress('1')">1</button>
-  <button class="key" onclick="keyPress('2')">2</button>
-  <button class="key" onclick="keyPress('3')">3</button>
-  <button class="key" onclick="keyPress('4')">4</button>
-  <button class="key" onclick="keyPress('5')">5</button>
-  <button class="key" onclick="keyPress('6')">6</button>
-  <button class="key" onclick="keyPress('7')">7</button>
-  <button class="key" onclick="keyPress('8')">8</button>
-  <button class="key" onclick="keyPress('9')">9</button>
-  <button class="key key-muted" onclick="keyPress('.')">.</button>
-  <button class="key" onclick="keyPress('0')">0</button>
-  <button class="key key-muted" onclick="keyPress('del')">⌫</button>
-</div>
-<div class="section" id="section-category">
-  <div class="field-label">分类</div>
-  <div class="cat-grid" id="cat-grid"><div class="loading">载入中...</div></div>
-</div>
-<div class="section" id="section-income-cat" style="display:none">
-  <div class="field-label">收入类型</div>
-  <div class="income-cats">
-    <button class="income-cat-btn selected" onclick="selectIncomecat(this,'正职 / 不是中藥')">正职收入</button>
-    <button class="income-cat-btn" onclick="selectIncomecat(this,'副业 / 行销日志')">副业收入</button>
-    <button class="income-cat-btn" onclick="selectIncomecat(this,'其他 / 额外收入')">其他收入</button>
+
+<div class="content">
+  <div class="amount-section">
+    <div class="amount-label">金额</div>
+    <div class="amount-display">
+      <span class="amount-currency">RM</span>
+      <span class="amount-value" id="amountDisplay">0</span>
+    </div>
+  </div>
+
+  <div class="keypad">
+    <div class="key" onclick="keyPress('1')">1</div>
+    <div class="key" onclick="keyPress('2')">2</div>
+    <div class="key" onclick="keyPress('3')">3</div>
+    <div class="key" onclick="keyPress('4')">4</div>
+    <div class="key" onclick="keyPress('5')">5</div>
+    <div class="key" onclick="keyPress('6')">6</div>
+    <div class="key" onclick="keyPress('7')">7</div>
+    <div class="key" onclick="keyPress('8')">8</div>
+    <div class="key" onclick="keyPress('9')">9</div>
+    <div class="key" onclick="keyPress('.')">.</div>
+    <div class="key" onclick="keyPress('0')">0</div>
+    <div class="key del" onclick="keyPress('del')">⌫</div>
+  </div>
+
+  <div class="form-area">
+
+    <!-- 支出分类 -->
+    <div id="expenseCats">
+      <div class="field-label">分类</div>
+      <div class="cat-grid" id="catGrid">
+        <div class="loading-state" style="grid-column:1/-1;color:#CCC;font-size:12px;padding:12px 0">加载分类...</div>
+      </div>
+    </div>
+
+    <!-- 收入类型 -->
+    <div id="incomeTypes" style="display:none">
+      <div class="field-label">收入类型</div>
+      <div class="cat-grid">
+        <div class="cat-card" onclick="selectType(this,'正职收入','income')">
+          <div class="cat-icon">💼</div>
+          <div class="cat-name">正职收入</div>
+        </div>
+        <div class="cat-card" onclick="selectType(this,'副业收入','income')">
+          <div class="cat-icon">💡</div>
+          <div class="cat-name">副业收入</div>
+        </div>
+        <div class="cat-card" onclick="selectType(this,'投资收益','income')">
+          <div class="cat-icon">📈</div>
+          <div class="cat-name">投资收益</div>
+        </div>
+        <div class="cat-card" onclick="selectType(this,'其他收入','income')">
+          <div class="cat-icon">🎁</div>
+          <div class="cat-name">其他收入</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 还债账户 -->
+    <div id="debtAccounts" style="display:none">
+      <div class="field-label">还哪一笔债</div>
+      <div class="cat-grid" id="debtGrid">
+        <div style="grid-column:1/-1;color:#CCC;font-size:12px;padding:12px 0">加载中...</div>
+      </div>
+    </div>
+
+    <!-- 描述 -->
+    <div>
+      <div class="field-label">描述</div>
+      <input class="desc-input" id="descInput" placeholder="输入描述（可选）" type="text">
+    </div>
+
+    <!-- 日期 -->
+    <div>
+      <div class="field-label">日期</div>
+      <div class="date-chips">
+        <div class="date-chip selected" id="chip-today" onclick="selectDate('today')">今天</div>
+        <div class="date-chip" id="chip-yesterday" onclick="selectDate('yesterday')">昨天</div>
+        <div class="date-custom">
+          <input type="date" id="customDate" onchange="selectDate('custom')">
+        </div>
+      </div>
+    </div>
+
+    <button class="submit-btn submit-expense" id="submitBtn" onclick="submit()">记录支出</button>
   </div>
 </div>
-<div class="section" id="section-debt-accounts" style="display:none">
-  <div class="field-label">还哪一笔债</div>
-  <div class="debt-accounts" id="debt-accounts"><div class="loading">载入中...</div></div>
+
+<div class="bottomnav">
+  <a href="/record.html" class="nav-item active">
+    <div class="nav-icon">✏️</div>
+    <div>记录</div>
+  </a>
+  <a href="/dashboard.html" class="nav-item">
+    <div class="nav-icon">📊</div>
+    <div>报告</div>
+  </a>
 </div>
-<div class="section">
-  <div class="field-label">日期</div>
-  <div class="date-row">
-    <div class="date-chip selected" onclick="selectDate(this,'today')">今天</div>
-    <div class="date-chip" onclick="selectDate(this,'yesterday')">昨天</div>
-    <input type="date" class="date-input" id="custom-date" onchange="selectCustomDate(this)">
-  </div>
-</div>
-<div class="section">
-  <div class="field-label">备注（可选）</div>
-  <textarea class="note-input" id="note" rows="2" placeholder="例：和朋友吃午餐"></textarea>
-</div>
-<button class="submit-btn" id="submit-btn" onclick="submitRecord()">记录支出</button>
-<hr class="divider">
-<div class="recent-label">最近记录</div>
-<div class="recent-list" id="recent-list"><div class="loading">载入中...</div></div>
+
 <div class="toast" id="toast"></div>
+
 <script>
-let currentType='expense',amountStr='0',selectedCategoryId=null,selectedIncomeCategory='正职 / 不是中藥',selectedDebtId=null,selectedDate='today';
-function getToday(){return new Date().toISOString().split('T')[0]}
-function getYesterday(){const d=new Date();d.setDate(d.getDate()-1);return d.toISOString().split('T')[0]}
-function getSelectedDate(){if(selectedDate==='today')return getToday();if(selectedDate==='yesterday')return getYesterday();return document.getElementById('custom-date').value||getToday()}
-function keyPress(k){if(k==='del'){amountStr=amountStr.length>1?amountStr.slice(0,-1):'0'}else if(k==='.'){if(!amountStr.includes('.'))amountStr+='.'}else{if(amountStr==='0')amountStr=k;else if(amountStr.includes('.')&&amountStr.split('.')[1].length>=2)return;else amountStr+=k}document.getElementById('amount-display').textContent=amountStr;updateSubmitBtn()}
-function setType(type){currentType=type;document.querySelectorAll('.type-btn').forEach(b=>b.className='type-btn');const btns=document.querySelectorAll('.type-btn');if(type==='expense')btns[0].className='type-btn active';if(type==='income')btns[1].className='type-btn active-inc';if(type==='debt')btns[2].className='type-btn active-debt';document.getElementById('section-category').style.display=type==='expense'?'':'none';document.getElementById('section-income-cat').style.display=type==='income'?'':'none';document.getElementById('section-debt-accounts').style.display=type==='debt'?'':'none';updateSubmitBtn()}
-function updateSubmitBtn(){const btn=document.getElementById('submit-btn');const amt=parseFloat(amountStr)||0;if(currentType==='expense'){btn.className='submit-btn';btn.textContent=amt>0?`记录支出 RM ${parseFloat(amountStr).toFixed(2)}`:'记录支出'}else if(currentType==='income'){btn.className='submit-btn inc-btn';btn.textContent=amt>0?`记录收入 RM ${parseFloat(amountStr).toFixed(2)}`:'记录收入'}else{btn.className='submit-btn debt-btn-submit';btn.textContent=amt>0?`记录还款 RM ${parseFloat(amountStr).toFixed(2)}`:'记录还款'}}
-function selectDate(el,val){document.querySelectorAll('.date-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');selectedDate=val}
-function selectCustomDate(el){document.querySelectorAll('.date-chip').forEach(c=>c.classList.remove('selected'));selectedDate='custom'}
-function selectIncomecat(el,val){document.querySelectorAll('.income-cat-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');selectedIncomeCategory=val}
-function renderCategories(cats){const icons={'饮食':'🍜','交通':'🚗','娱乐':'🎉','购物':'🛒','医疗':'💊','进修':'📚','住家':'🏠','订阅':'💻','其他':'＋'};const grid=document.getElementById('cat-grid');grid.innerHTML='';cats.forEach((c,i)=>{const icon=Object.entries(icons).find(([k])=>c.name.includes(k))?.[1]||'📌';const btn=document.createElement('div');btn.className='cat-btn'+(i===0?' selected':'');btn.innerHTML=`<span class="icon">${icon}</span>${c.name}`;btn.onclick=()=>{document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedCategoryId=c.id};if(i===0)selectedCategoryId=c.id;grid.appendChild(btn)})}
-function renderDebtAccounts(accounts){const container=document.getElementById('debt-accounts');container.innerHTML='';accounts.forEach((a,i)=>{const btn=document.createElement('div');btn.className='debt-btn'+(i===0?' selected':'');btn.innerHTML=`<div class="debt-name">${a.name}</div><div class="debt-remaining">剩余 RM ${a.remaining.toLocaleString()}</div>`;btn.onclick=()=>{document.querySelectorAll('.debt-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedDebtId=a.id};if(i===0)selectedDebtId=a.id;container.appendChild(btn)})}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
-async function submitRecord(){const amount=parseFloat(amountStr);if(!amount||amount<=0){showToast('请输入金额');return}const note=document.getElementById('note').value.trim();const date=getSelectedDate();const btn=document.getElementById('submit-btn');btn.textContent='处理中...';btn.disabled=true;try{if(currentType==='expense'){await fetch('/api/notion?action=add-expense',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:note||'支出',amount,categoryId:selectedCategoryId,date})})}else if(currentType==='income'){await fetch('/api/notion?action=add-income',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:note||'收入',amount,category:selectedIncomeCategory,date,remarks:note})})}showToast(currentType==='expense'?'支出已记录 ✓':'收入已记录 ✓');amountStr='0';document.getElementById('amount-display').textContent='0';document.getElementById('note').value='';updateSubmitBtn();loadRecent()}catch(e){showToast('记录失败，请重试')}finally{btn.disabled=false;updateSubmitBtn()}}
-async function loadRecent(){try{const res=await fetch('/api/notion?action=dashboard');const data=await res.json();const list=document.getElementById('recent-list');if(!data.recentExpenses?.length){list.innerHTML='<div class="loading">暂无记录</div>';return}list.innerHTML=data.recentExpenses.map(e=>`<div class="recent-item"><div class="ri-left"><div class="ri-dot ri-exp"></div><div><div class="ri-name">${e.name||'支出'}</div><div class="ri-cat">${e.category||''}</div></div></div><div><div class="ri-amount">-RM ${e.amount.toFixed(2)}</div><div class="ri-date">${e.date}</div></div></div>`).join('')}catch(e){}}
-async function init(){try{const[catsRes,debtRes]=await Promise.all([fetch('/api/notion?action=categories'),fetch('/api/notion?action=debt-accounts')]);const cats=await catsRes.json();const debts=await debtRes.json();renderCategories(cats);renderDebtAccounts(debts)}catch(e){document.getElementById('cat-grid').innerHTML='<div class="loading">无法载入分类</div>'}loadRecent()}
-init();
+let amount = '';
+let selectedCatId = null;
+let selectedCatName = '';
+let selectedIncomeType = '';
+let selectedDebtId = null;
+let selectedDebtName = '';
+let selectedDate = 'today';
+let currentTab = 'expense';
+
+const debtIcons = {
+  'cimb': '🏦', 'uob': '🏧', 'hsbc': '💳', 'maybank': '🏦',
+  'friend': '👥', 'family': '👨‍👩‍👧', 'personal': '🤝'
+};
+
+function getDebtIcon(name) {
+  const lower = name.toLowerCase();
+  for (const [k, v] of Object.entries(debtIcons)) {
+    if (lower.includes(k)) return v;
+  }
+  return '💳';
+}
+
+const catIcons = {
+  '订阅': '📱', 'subscription': '📱',
+  '其他': '📦', 'others': '📦',
+  '娱乐': '🎉', 'entertainment': '🎉',
+  '交通': '🚗', 'transport': '🚗',
+  '生活': '🛒', 'life': '🛒', 'living': '🏠',
+  '住宿': '🏠',
+  '饮食': '🍜', 'food': '🍜', 'beverage': '🍜',
+};
+function getCatIcon(name) {
+  const lower = name.toLowerCase();
+  for (const [k, v] of Object.entries(catIcons)) {
+    if (lower.includes(k)) return v;
+  }
+  return '💰';
+}
+
+async function loadCategories() {
+  const res = await fetch('/api/notion?action=categories');
+  const cats = await res.json();
+  const grid = document.getElementById('catGrid');
+  grid.innerHTML = cats.map(c => `
+    <div class="cat-card" onclick="selectCat(this,'${c.id}','${c.name.replace(/'/g,"\\'")}')">
+      <div class="cat-icon">${getCatIcon(c.name)}</div>
+      <div class="cat-name">${c.name}</div>
+    </div>`).join('');
+}
+
+async function loadDebtAccounts() {
+  const res = await fetch('/api/notion?action=debt-accounts');
+  const accounts = await res.json();
+  const grid = document.getElementById('debtGrid');
+  grid.innerHTML = accounts.map(a => `
+    <div class="cat-card" onclick="selectDebt(this,'${a.id}','${a.name.replace(/'/g,"\\'")}')">
+      <div class="cat-icon">${getDebtIcon(a.name)}</div>
+      <div class="cat-name">${a.name}</div>
+      <div class="cat-sub">剩 RM ${Math.round(a.remaining).toLocaleString()}</div>
+    </div>`).join('');
+}
+
+function selectCat(el, id, name) {
+  document.querySelectorAll('#catGrid .cat-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedCatId = id;
+  selectedCatName = name;
+}
+
+function selectType(el, name, type) {
+  const grid = el.closest('.cat-grid');
+  grid.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected-income','selected-debt','selected'));
+  el.classList.add(type === 'income' ? 'selected-income' : 'selected-debt');
+  selectedIncomeType = name;
+}
+
+function selectDebt(el, id, name) {
+  document.querySelectorAll('#debtGrid .cat-card').forEach(c => c.classList.remove('selected-debt'));
+  el.classList.add('selected-debt');
+  selectedDebtId = id;
+  selectedDebtName = name;
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  selectedCatId = null; selectedIncomeType = ''; selectedDebtId = null;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+
+  document.getElementById('expenseCats').style.display = tab === 'expense' ? 'block' : 'none';
+  document.getElementById('incomeTypes').style.display = tab === 'income' ? 'block' : 'none';
+  document.getElementById('debtAccounts').style.display = tab === 'debt' ? 'block' : 'none';
+
+  const btn = document.getElementById('submitBtn');
+  btn.className = `submit-btn submit-${tab}`;
+  btn.textContent = tab === 'expense' ? '记录支出' : tab === 'income' ? '记录收入' : '记录还款';
+}
+
+function keyPress(k) {
+  if (k === 'del') { amount = amount.slice(0, -1); }
+  else if (k === '.' && amount.includes('.')) { return; }
+  else if (amount === '0' && k !== '.') { amount = k; }
+  else { if (amount.includes('.') && amount.split('.')[1].length >= 2) return; amount += k; }
+  if (!amount) amount = '';
+  document.getElementById('amountDisplay').textContent = amount || '0';
+}
+
+function selectDate(type) {
+  selectedDate = type;
+  document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('selected'));
+  if (type !== 'custom') document.getElementById('chip-' + type).classList.add('selected');
+}
+
+function getDateStr() {
+  const now = new Date();
+  if (selectedDate === 'yesterday') { now.setDate(now.getDate() - 1); }
+  else if (selectedDate === 'custom') { return document.getElementById('customDate').value; }
+  return now.toISOString().split('T')[0];
+}
+
+function showToast(msg, ok = true) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = ok ? '#111' : '#C0392B';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+async function submit() {
+  const amtVal = parseFloat(amount);
+  if (!amtVal || amtVal <= 0) { showToast('请先输入金额', false); return; }
+  const dateStr = getDateStr();
+  if (!dateStr) { showToast('请选择日期', false); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '记录中...';
+
+  try {
+    const desc = document.getElementById('descInput').value.trim();
+    let body, action;
+
+    if (currentTab === 'expense') {
+      action = 'add-expense';
+      body = { name: desc || selectedCatName || '支出', amount: amtVal, categoryId: selectedCatId, date: dateStr };
+    } else if (currentTab === 'income') {
+      if (!selectedIncomeType) { showToast('请选择收入类型', false); btn.disabled = false; btn.textContent = '记录收入'; return; }
+      action = 'add-income';
+      body = { name: desc || selectedIncomeType, amount: amtVal, category: selectedIncomeType, date: dateStr };
+    } else {
+      if (!selectedDebtId) { showToast('请选择债务账户', false); btn.disabled = false; btn.textContent = '记录还款'; return; }
+      action = 'add-expense';
+      body = { name: desc || `还款 · ${selectedDebtName}`, amount: amtVal, date: dateStr };
+    }
+
+    const res = await fetch(`/api/notion?action=${action}`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('✓ 已记录！');
+      amount = '';
+      document.getElementById('amountDisplay').textContent = '0';
+      document.getElementById('descInput').value = '';
+    } else { showToast('记录失败，请重试', false); }
+  } catch(e) { showToast('网络错误', false); }
+
+  btn.disabled = false;
+  btn.textContent = currentTab === 'expense' ? '记录支出' : currentTab === 'income' ? '记录收入' : '记录还款';
+}
+
+// 初始化
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('customDate').value = today;
+loadCategories();
+loadDebtAccounts();
 </script>
 </body>
 </html>
