@@ -17,39 +17,33 @@ body{background:#EEEEE9;font-family:-apple-system,'PingFang SC',sans-serif;min-h
   padding-bottom:calc(80px + env(safe-area-inset-bottom));
 }
 
-@media(min-width:520px){
-  body{display:flex;justify-content:center;align-items:flex-start;padding:24px 16px 24px}
-  .safe-wrap{border-radius:28px;min-height:auto;box-shadow:0 8px 40px rgba(0,0,0,0.10);overflow:hidden}
-}
-
-.topbar{padding:calc(16px + env(safe-area-inset-top)) 20px 8px;display:flex;justify-content:space-between;align-items:center}
+.topbar{padding:calc(16px + env(safe-area-inset-top)) 20px 12px;display:flex;justify-content:space-between;align-items:center;background:#F5F5F0}
 .topbar-name{font-size:13px;font-weight:600;color:#111;letter-spacing:0.05em}
 .topbar-sub{font-size:11px;color:#999;margin-top:2px}
-.notif{width:34px;height:34px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid #E8E8E8;font-size:16px;cursor:pointer}
+.notif{width:34px;height:34px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid #E8E8E8;font-size:16px}
 
-.hero-card{margin:8px 20px 0;background:#111;border-radius:24px;padding:22px;color:#fff;position:relative;overflow:hidden}
+.hero-card{margin:0 20px;background:#111;border-radius:24px;padding:22px;color:#fff;position:relative;overflow:hidden}
 .hero-card::after{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:rgba(197,169,106,0.12);border-radius:50%}
-.hero-month-nav{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.mnav-btn{background:#1E1E1E;border:1px solid #2A2A2A;color:#666;width:28px;height:28px;border-radius:50%;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s}
+.hero-month-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.mnav-btn{background:#1E1E1E;border:1px solid #2A2A2A;color:#666;width:28px;height:28px;border-radius:50%;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 .mnav-btn:hover{border-color:#C5A96A;color:#C5A96A}
 .hero-month-label{font-size:15px;font-weight:600;color:#F0F0F0;flex:1}
 .hero-year-btns{display:flex;gap:6px}
-.yr-btn{background:#1E1E1E;border:1px solid #2A2A2A;color:#666;padding:3px 10px;border-radius:12px;font-size:11px;cursor:pointer}
+.yr-btn{background:#1E1E1E;border:1px solid #2A2A2A;color:#666;padding:3px 10px;border-radius:12px;font-size:11px;cursor:pointer;transition:all .2s}
 .yr-btn.active{border-color:#C5A96A;color:#C5A96A}
 .hero-label{font-size:11px;color:#666;margin-bottom:4px}
 .hero-balance{font-size:34px;font-weight:700;letter-spacing:-1px;color:#F0F0F0}
 .hero-balance span{font-size:18px;font-weight:400;color:#777;margin-right:3px}
-.hero-row{display:flex;gap:0;margin-top:16px;border-top:1px solid #1E1E1E;padding-top:14px}
+.hero-row{display:flex;margin-top:16px;border-top:1px solid #1E1E1E;padding-top:14px}
 .hero-mini{flex:1;padding-right:12px}
 .hero-mini:not(:first-child){padding-left:12px;border-left:1px solid #1E1E1E}
 .hero-mini-label{font-size:10px;color:#666;margin-bottom:3px;letter-spacing:0.05em}
-.hero-mini-val{font-size:15px;font-weight:700}
+.hero-mini-val{font-size:15px;font-weight:700;color:#F0F0F0}
 .hero-mini-val.gold{color:#C5A96A}
 .hero-mini-val.green{color:#52C17A}
 
 .section{padding:16px 20px 0}
-.sec-title{font-size:11px;font-weight:600;color:#AAA;letter-spacing:0.10em;text-transform:uppercase;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.sec-more{font-size:11px;color:#C5A96A;font-weight:500;letter-spacing:0;text-transform:none}
+.sec-title{font-size:11px;font-weight:600;color:#AAA;letter-spacing:0.10em;text-transform:uppercase;margin-bottom:12px}
 
 .alert-card{background:#fff;border-radius:16px;padding:14px 16px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;border-left:3px solid #E05C5C}
 .alert-card.warn{border-left-color:#E0A550}
@@ -99,12 +93,50 @@ body{background:#EEEEE9;font-family:-apple-system,'PingFang SC',sans-serif;min-h
 .nav-item.active{color:#111}
 .nav-icon{font-size:20px}
 
-@media(min-width:520px){
-  .bottomnav{border-radius:0 0 28px 28px;position:sticky;bottom:0}
-  .safe-wrap{padding-bottom:0}
-}
-
 .loading-state{color:#CCC;font-size:13px;text-align:center;padding:24px}
+
+/* Desktop */
+@media(min-width:520px){
+  body{display:block;padding:0;background:#EEEEE9}
+  .safe-wrap{
+    max-width:100%;
+    border-radius:0;
+    box-shadow:none;
+    background:transparent;
+    display:grid;
+    grid-template-columns:400px 1fr;
+    grid-template-areas:
+      'topbar topbar'
+      'left   right'
+      'nav    nav';
+    min-height:100vh;
+    padding-bottom:0;
+  }
+  .topbar{
+    grid-area:topbar;
+    background:#fff;
+    border-bottom:1px solid #E8E8E8;
+    padding:16px 32px;
+  }
+  .left-col{grid-area:left;padding:24px 12px 100px 24px}
+  .right-col{grid-area:right;padding:24px 24px 100px 12px}
+  .hero-card{margin:0}
+  .bottomnav{
+    grid-area:nav;
+    position:sticky;
+    bottom:0;
+    max-width:100%;
+    left:0;
+    transform:none;
+    border-radius:0;
+    border-top:1px solid #E8E8E8;
+    padding:10px 32px;
+    justify-content:flex-start;
+    gap:32px;
+    background:#fff;
+  }
+  .nav-item{flex:none;flex-direction:row;gap:8px;font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -118,61 +150,67 @@ body{background:#EEEEE9;font-family:-apple-system,'PingFang SC',sans-serif;min-h
     <div class="notif">🔔</div>
   </div>
 
-  <div class="hero-card">
-    <div class="hero-month-nav">
-      <button class="mnav-btn" id="prevMonth">‹</button>
-      <div class="hero-month-label" id="heroMonthLabel">--</div>
-      <button class="mnav-btn" id="nextMonth">›</button>
-      <div class="hero-year-btns">
-        <button class="yr-btn" onclick="setYear(2025)">2025</button>
-        <button class="yr-btn active" onclick="setYear(2026)">2026</button>
+  <!-- 左栏 -->
+  <div class="left-col">
+    <div class="hero-card">
+      <div class="hero-month-nav">
+        <button class="mnav-btn" id="prevMonth">‹</button>
+        <div class="hero-month-label" id="heroMonthLabel">--</div>
+        <button class="mnav-btn" id="nextMonth">›</button>
+        <div class="hero-year-btns">
+          <button class="yr-btn" onclick="setYear(2025)">2025</button>
+          <button class="yr-btn active" onclick="setYear(2026)">2026</button>
+        </div>
+      </div>
+      <div class="hero-label">本月净收支</div>
+      <div class="hero-balance"><span>RM</span><span id="heroNet">--</span></div>
+      <div class="hero-row">
+        <div class="hero-mini">
+          <div class="hero-mini-label">收入</div>
+          <div class="hero-mini-val gold" id="heroIncome">--</div>
+        </div>
+        <div class="hero-mini">
+          <div class="hero-mini-label">支出</div>
+          <div class="hero-mini-val" id="heroExpenses">--</div>
+        </div>
+        <div class="hero-mini">
+          <div class="hero-mini-label">储蓄率</div>
+          <div class="hero-mini-val green" id="heroSavings">--</div>
+        </div>
       </div>
     </div>
-    <div class="hero-label">本月净收支</div>
-    <div class="hero-balance"><span>RM</span><span id="heroNet">--</span></div>
-    <div class="hero-row">
-      <div class="hero-mini">
-        <div class="hero-mini-label">收入</div>
-        <div class="hero-mini-val gold" id="heroIncome">--</div>
-      </div>
-      <div class="hero-mini">
-        <div class="hero-mini-label">支出</div>
-        <div class="hero-mini-val" id="heroExpenses">--</div>
-      </div>
-      <div class="hero-mini">
-        <div class="hero-mini-label">储蓄率</div>
-        <div class="hero-mini-val green" id="heroSavings">--</div>
-      </div>
+
+    <div id="alertSection" style="display:none;margin-top:16px">
+      <div class="sec-title">智能提醒</div>
+      <div id="alertList"></div>
     </div>
-  </div>
 
-  <div class="section" id="alertSection" style="display:none">
-    <div class="sec-title">智能提醒</div>
-    <div id="alertList"></div>
-  </div>
-
-  <div class="section">
-    <div class="sec-title">预算执行</div>
-    <div id="budgetList"><div class="loading-state">加载中...</div></div>
-  </div>
-
-  <div class="section">
-    <div class="sec-title">全年支出趋势</div>
-    <div class="chart-card">
-      <div class="chart-inner">
-        <canvas id="trendChart" role="img" aria-label="Monthly expense trend">Loading...</canvas>
-      </div>
+    <div style="margin-top:16px">
+      <div class="sec-title">最近支出</div>
+      <div id="recentList"><div class="loading-state">加载中...</div></div>
     </div>
   </div>
 
-  <div class="section">
-    <div class="sec-title">债务进度</div>
-    <div id="debtList"><div class="loading-state">加载中...</div></div>
-  </div>
+  <!-- 右栏 -->
+  <div class="right-col">
+    <div style="margin-bottom:16px">
+      <div class="sec-title">全年支出趋势</div>
+      <div class="chart-card">
+        <div class="chart-inner">
+          <canvas id="trendChart" role="img" aria-label="Monthly expense trend">Loading...</canvas>
+        </div>
+      </div>
+    </div>
 
-  <div class="section">
-    <div class="sec-title">最近支出</div>
-    <div id="recentList"><div class="loading-state">加载中...</div></div>
+    <div style="margin-bottom:16px">
+      <div class="sec-title">预算执行</div>
+      <div id="budgetList"><div class="loading-state">加载中...</div></div>
+    </div>
+
+    <div>
+      <div class="sec-title">债务进度</div>
+      <div id="debtList"><div class="loading-state">加载中...</div></div>
+    </div>
   </div>
 
 </div>
@@ -191,7 +229,7 @@ body{background:#EEEEE9;font-family:-apple-system,'PingFang SC',sans-serif;min-h
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const fmt = n => 'RM ' + (n||0).toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmtShort = n => 'RM ' + (n||0).toLocaleString('en-MY',{minimumFractionDigits:0,maximumFractionDigits:0});
+const fmtShort = n => 'RM ' + Math.round(n||0).toLocaleString('en-MY');
 
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth() + 1;
@@ -218,20 +256,21 @@ function setYear(y){
   const now=new Date();
   currentMonth=y===now.getFullYear()?now.getMonth()+1:12;
   updateYearBtns();
+  yearlyCache={};
   loadAll();
 }
 
 function updateYearBtns(){
   document.querySelectorAll('.yr-btn').forEach(b=>{
-    b.classList.toggle('active', parseInt(b.textContent)===currentYear);
+    b.classList.toggle('active',parseInt(b.textContent)===currentYear);
   });
 }
 
 function buildAlerts(data){
-  const now = new Date();
-  const daysLeft = new Date(now.getFullYear(),now.getMonth()+1,0).getDate() - now.getDate();
-  const isCurrentMonth = currentYear===now.getFullYear()&&currentMonth===now.getMonth()+1;
-  const alerts = [];
+  const now=new Date();
+  const daysLeft=new Date(now.getFullYear(),now.getMonth()+1,0).getDate()-now.getDate();
+  const isCurrentMonth=currentYear===now.getFullYear()&&currentMonth===now.getMonth()+1;
+  const alerts=[];
 
   if(isCurrentMonth){
     data.budget.forEach(b=>{
@@ -239,8 +278,8 @@ function buildAlerts(data){
         alerts.push({type:'red',icon:'⚠️',title:`${b.name} 已超支 ${fmtShort(b.actual-b.budget)}`,body:`本月花了 ${fmtShort(b.actual)}，预算 ${fmtShort(b.budget)}。剩余 ${daysLeft} 天，建议控制此类消费。`});
       } else if(b.budget>0&&b.usage>85){
         const remain=b.budget-b.actual;
-        const perDay=daysLeft>0?(remain/daysLeft):0;
-        alerts.push({type:'warn',icon:'👀',title:`${b.name} 快到预算上限`,body:`已花 ${fmtShort(b.actual)} / ${fmtShort(b.budget)}（${b.usage}%）。剩余 ${daysLeft} 天每天只剩 ${fmtShort(perDay)}。`});
+        const perDay=daysLeft>0?Math.round(remain/daysLeft):0;
+        alerts.push({type:'warn',icon:'👀',title:`${b.name} 快到预算上限`,body:`已花 ${fmtShort(b.actual)} / ${fmtShort(b.budget)}（${b.usage}%）。剩余 ${daysLeft} 天，每天只剩 ${fmtShort(perDay)}。`});
       }
     });
     if(data.monthly.savingsRate>=30){
@@ -248,12 +287,11 @@ function buildAlerts(data){
     }
   }
 
-  const alertSection = document.getElementById('alertSection');
-  const alertList = document.getElementById('alertList');
-  if(alerts.length===0){alertSection.style.display='none';return;}
-  alertSection.style.display='block';
-  document.querySelector('#alertSection .sec-title').textContent='智能提醒';
-  alertList.innerHTML=alerts.map(a=>`
+  const sec=document.getElementById('alertSection');
+  const list=document.getElementById('alertList');
+  if(!alerts.length){sec.style.display='none';return;}
+  sec.style.display='block';
+  list.innerHTML=alerts.map(a=>`
     <div class="alert-card ${a.type==='red'?'':a.type==='warn'?'warn':'tip'}">
       <div class="alert-icon ${a.type==='red'?'red':a.type==='warn'?'warn':'green'}">${a.icon}</div>
       <div><div class="alert-title">${a.title}</div><div class="alert-body">${a.body}</div></div>
@@ -268,13 +306,16 @@ async function loadAll(){
   const res=await fetch(`/api/notion?action=dashboard&month=${monthStr}`);
   const data=await res.json();
 
-  const net=data.monthly.income-data.monthly.expenses;
-  document.getElementById('heroNet').textContent=(net||0).toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const net=(data.monthly.income||0)-(data.monthly.expenses||0);
+  document.getElementById('heroNet').textContent=Math.round(net).toLocaleString('en-MY');
   document.getElementById('heroIncome').textContent=fmtShort(data.monthly.income);
   document.getElementById('heroExpenses').textContent=fmtShort(data.monthly.expenses);
-  document.getElementById('heroSavings').textContent=data.monthly.savingsRate+'%';
+  document.getElementById('heroSavings').textContent=(data.monthly.savingsRate||0)+'%';
 
   buildAlerts(data);
+
+  const catIcon={'🍜 饮食 Food':'🍜','🚗 交通 Transport':'🚗','🎉 娱乐 Entertainment':'🎉'};
+  const catBg={'🍜 饮食 Food':'#FEF0F0','🚗 交通 Transport':'#F0F4FE','🎉 娱乐 Entertainment':'#FFF0F8'};
 
   document.getElementById('budgetList').innerHTML=data.budget.length
     ?data.budget.map(b=>{
@@ -285,7 +326,7 @@ async function loadAll(){
         <div class="budget-top"><div class="budget-name">${b.name}</div><div class="badge ${badgeCls}">${badgeText}</div></div>
         <div class="budget-amounts"><b>${fmtShort(b.actual)}</b> / ${fmtShort(b.budget)}</div>
         <div class="btrack"><div class="bfill ${cls}" style="width:${Math.min(b.usage,100)}%"></div></div>
-        <div class="budget-remain">${b.usage>100?`已超出 <b>${b.usage-100}%</b>`:`使用了 <b>${b.usage}%</b>`}</div>
+        <div class="budget-remain">${b.usage>100?`已超出预算 <b>${b.usage-100}%</b>`:`已使用 <b>${b.usage}%</b>`}</div>
       </div>`;
     }).join('')
     :'<div class="loading-state">本月无预算数据</div>';
@@ -303,8 +344,6 @@ async function loadAll(){
     }).join('')
     :'<div class="loading-state">无债务记录</div>';
 
-  const catIcon={'🍜 饮食 Food':'🍜','🚗 交通 Transport':'🚗','🎉 娱乐 Entertainment':'🎉'};
-  const catBg={'🍜 饮食 Food':'#FEF0F0','🚗 交通 Transport':'#F0F4FE','🎉 娱乐 Entertainment':'#FFF0F8'};
   document.getElementById('recentList').innerHTML=data.recentExpenses.length
     ?data.recentExpenses.map(t=>{
       const icon=catIcon[t.category]||'💳';
@@ -326,6 +365,7 @@ async function loadYearly(){
     yearlyCache[currentYear]=await res.json();
   }
   const yd=yearlyCache[currentYear];
+  if(!yd||!yd.months) return;
   const labels=yd.months.map(m=>m.month);
   const expenses=yd.months.map(m=>m.expenses);
 
