@@ -59,16 +59,17 @@ async function getMonthData(year, month) {
 
   let totalExpenses = 0;
   const expensesByCategory = {};
+  const dailyTotals = {};
+
   for (const exp of expenses) {
     const p = exp.properties;
     const amount = p['Amount Spent']?.number || 0;
-    const category = p['Daily Spend Category']?.select?.name || '';
     const catRel = p['Budget Category Record 开销栏目']?.relation || [];
     const catId = catRel[0]?.id || 'other';
-    if (category !== '⛔ 不纳入（Excluded）') {
-      totalExpenses += amount;
-      expensesByCategory[catId] = (expensesByCategory[catId] || 0) + amount;
-    }
+    const date = p['Date']?.date?.start?.slice(0, 10) || '';
+    totalExpenses += amount;
+    expensesByCategory[catId] = (expensesByCategory[catId] || 0) + amount;
+    if (date) dailyTotals[date] = (dailyTotals[date] || 0) + amount;
   }
 
   let totalIncome = 0;
@@ -76,7 +77,7 @@ async function getMonthData(year, month) {
     totalIncome += inc.properties['Amount Receive']?.number || 0;
   }
 
-  return { totalExpenses, totalIncome, expensesByCategory, expenses };
+  return { totalExpenses, totalIncome, expensesByCategory, expenses, dailyTotals };
 }
 
 export default async function handler(req, res) {
@@ -99,7 +100,8 @@ export default async function handler(req, res) {
         targetMonth = now.getMonth() + 1;
       }
 
-      const { totalExpenses, totalIncome, expensesByCategory, expenses } = await getMonthData(targetYear, targetMonth);
+      const { totalExpenses, totalIncome, expensesByCategory, expenses, dailyTotals } = await getMonthData(targetYear, targetMonth);
+
       const [budgetCats, debtAccounts, savingsAccounts] = await Promise.all([
         queryDB(DB.budgetCategories),
         queryDB(DB.debtAccounts),
@@ -109,9 +111,16 @@ export default async function handler(req, res) {
       const budgetData = budgetCats.map(cat => {
         const p = cat.properties;
         const name = p['Category']?.title?.[0]?.plain_text || '';
-        const budget = p['Budget']?.rollup?.number || 0;
+        const rollup = p['Budget']?.rollup;
+        const budget = rollup?.type === 'number' ? (rollup.number || 0)
+          : rollup?.type === 'array' ? rollup.array.reduce((s, i) => s + (i.number || 0), 0)
+          : 0;
         const actual = expensesByCategory[cat.id] || 0;
-        return { name, budget, actual, variance: budget - actual, usage: budget > 0 ? Math.round((actual / budget) * 100) : 0 };
+        return {
+          name, budget, actual,
+          variance: budget - actual,
+          usage: budget > 0 ? Math.round((actual / budget) * 100) : 0,
+        };
       }).filter(b => b.name && b.budget > 0);
 
       const debtData = debtAccounts.map(d => ({
@@ -141,7 +150,7 @@ export default async function handler(req, res) {
           name: e.properties['Expenses']?.title?.[0]?.plain_text || '',
           amount: e.properties['Amount Spent']?.number || 0,
           date: e.properties['Date']?.date?.start || '',
-          category: e.properties['Daily Spend Category']?.select?.name || '',
+          category: e.properties['Budget Category Record 开销栏目']?.relation?.[0] ? budgetCats.find(c => c.id === e.properties['Budget Category Record 开销栏目'].relation[0].id)?.properties['Category']?.title?.[0]?.plain_text || '' : '',
         }));
 
       return res.json({
@@ -151,20 +160,25 @@ export default async function handler(req, res) {
         debt: debtData,
         savings: savingsData,
         recentExpenses,
+        daily: dailyTotals,
       });
     }
 
     if (action === 'yearly') {
       const targetYear = parseInt(year) || new Date().getFullYear();
       const now = new Date();
-      const currentMonth = now.getMonth() + 1;
-      const maxMonth = targetYear === now.getFullYear() ? currentMonth : 12;
-      const months = [];
+      const maxMonth = targetYear === now.getFullYear() ? now.getMonth() + 1 : 12;
       const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+      const months = [];
 
       for (let m = 1; m <= maxMonth; m++) {
         const { totalExpenses, totalIncome } = await getMonthData(targetYear, m);
-        months.push({ month: monthNames[m-1], expenses: totalExpenses, income: totalIncome, savingsRate: totalIncome > 0 ? Math.round(((totalIncome - totalExpenses) / totalIncome) * 100) : 0 });
+        months.push({
+          month: monthNames[m - 1],
+          expenses: totalExpenses,
+          income: totalIncome,
+          savingsRate: totalIncome > 0 ? Math.round(((totalIncome - totalExpenses) / totalIncome) * 100) : 0,
+        });
       }
 
       return res.json({ year: targetYear, months });
@@ -172,12 +186,19 @@ export default async function handler(req, res) {
 
     if (action === 'categories') {
       const cats = await queryDB(DB.budgetCategories);
-      return res.json(cats.map(c => ({ id: c.id, name: c.properties['Category']?.title?.[0]?.plain_text || '' })).filter(c => c.name));
+      return res.json(cats.map(c => ({
+        id: c.id,
+        name: c.properties['Category']?.title?.[0]?.plain_text || '',
+      })).filter(c => c.name));
     }
 
     if (action === 'debt-accounts') {
       const accounts = await queryDB(DB.debtAccounts);
-      return res.json(accounts.map(a => ({ id: a.id, name: a.properties['Name']?.title?.[0]?.plain_text || '', remaining: a.properties['剩下债务']?.number || 0 })));
+      return res.json(accounts.map(a => ({
+        id: a.id,
+        name: a.properties['Name']?.title?.[0]?.plain_text || '',
+        remaining: a.properties['剩下债务']?.number || 0,
+      })));
     }
 
     if (req.method === 'POST' && action === 'add-expense') {
